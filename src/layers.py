@@ -2,6 +2,7 @@ import mxnet as mx
 import numpy as np
 from mxnet import nd, autograd, gluon
 from mxnet.gluon import nn, Block
+import pdb
 
 class GraphConvolution(Block):
     def __init__(self, in_features, out_features, **kwargs):
@@ -12,14 +13,15 @@ class GraphConvolution(Block):
             self.weight = self.params.get(
                 'weight',
                 init=mx.init.Xavier(magnitude=2.24),
-                shape=(in_features, out_features)
+                shape=(in_features, out_features),
+                dtype=np.float64
             )
             # TODO: Make bias optional
-            self.bias = self.params.get('bias', shape=(out_features,))
+            self.bias = self.params.get('bias', shape=(out_features,), dtype=np.float64)
 
     def forward(self, inp, adj):
-        with inp.context:
-            support = nd.dot(inp, self.weight.data()) + self.bias.data()
-            output = nd.dot(adj, support)
+        #with inp.context:
+        support = nd.dot(inp, self.weight.data()) + self.bias.data()
+        output = nd.dot(adj, support)
             # TODO: Make bias optional
-            return output + self.bias.data()
+        return output + self.bias.data()

@@ -4,7 +4,6 @@ from mxnet import nd, autograd, gluon
 from mxnet.gluon import nn, Block
 import mxnet.ndarray as F
 from layers import GraphConvolution
-import pdb
 
 class GCN(Block):
     def __init__(self, nfeat, nhid, nclass, dropout, **kwargs):
@@ -14,9 +13,8 @@ class GCN(Block):
             self.gc2 = GraphConvolution(nhid, nclass)
             self.dropout = dropout
 
-    def forward(self, x, adj):
-        pdb.set_trace()
+    def forward(self, x, adj, training=True):
         x = F.relu(self.gc1(x, adj))
-        x = F.dropout(x, self.dropout, training=self.training)
+        #x = gluon.nn.Dropout(x, self.dropout)
         x = self.gc2(x, adj)
-        return F.log_softmax(x, dim=1)
+        return F.log_softmax(x, axis=1)
