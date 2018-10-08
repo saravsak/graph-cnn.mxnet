@@ -1,17 +1,26 @@
+"""
+Author: Saravanakumar Shanmugam Sakthivadivel, 2018
+Github: https://github.com/codewithsk/graph-cnn.mxnet
+
+The Ohio State University
+Graph Convolutional Network
+
+File: train.py
+Description: Training script for graph convolutional network
+"""
 import time
 import argparse
 import numpy as np
 
+
+import mxnet as mx
+from mxnet import autograd, gluon
+
 from utils import load_data, accuracy
 from model import GCN
 
-import mxnet as mx
-from mxnet import nd, autograd, gluon
-
-import pdb
-
-# Training settings
-parser = argparse.ArgumentParser()
+# Parse command line arguments
+parser = argparse.ArgumentParser() # pylint: disable=invalid-name
 parser.add_argument('--num-gpu', type=int, default=-1,
                     help='Select GPU to train on. -1 for CPU.')
 parser.add_argument('--fastmode', action='store_true', default=False,
@@ -28,38 +37,39 @@ parser.add_argument('--hidden', type=int, default=16,
 parser.add_argument('--dropout', type=float, default=0.0,
                     help='Dropout rate (1 - keep probability).')
 
-args = parser.parse_args()
+args = parser.parse_args() #pylint: disable=invalid-name
 
-ctx = None
+# Set up context.
+ctx = None # pylint: disable=invalid-name
 
 if args.num_gpu == -1:
-    ctx = mx.cpu()
+    ctx = mx.cpu() # pylint: disable=invalid-name
 else:
-    ctx = mx.gpu(args.num_gpu)
+    ctx = mx.gpu(args.num_gpu) # pylint: disable=invalid-name
 
+# Set seed for random number generators in numpy and mxnet
 np.random.seed(args.seed)
 mx.random.seed(args.seed)
 
-adj, features, labels, idx_train, idx_val, idx_test = load_data()
+adj, features, labels, idx_train, idx_val, idx_test = load_data() # pylint: disable=invalid-name
 
-model = GCN(
-        nfeat = features.shape[1],
-        nhid = args.hidden,
-        nclass = int(labels.max().asnumpy().item()) + 1,
-        dropout = args.dropout
-    )
+model = GCN(nfeat=features.shape[1], # pylint: disable=invalid-name
+            nhid=args.hidden,
+            nclass=int(labels.max().asnumpy().item()) + 1,
+            dropout=args.dropout)
 
 model.collect_params().initialize()
-trainer = gluon.Trainer(model.collect_params(),
+trainer = gluon.Trainer(model.collect_params(), # pylint: disable=invalid-name
                         'adam',
-                        {'learning_rate': args.lr,}
-                        )
+                        {'learning_rate': args.lr,})
 
 
-# TODO: Figure out how to use NLL loss MXNet
-loss = gluon.loss.SoftmaxCrossEntropyLoss()
+# Note: Original implementation uses
+# Negative Log Likelihood and not
+# SoftmaxCrossEntropyLoss
+loss = gluon.loss.SoftmaxCrossEntropyLoss() # pylint: disable=invalid-name
 
-accs = []
+accs = [] # pylint: disable=invalid-name
 
 for epoch in range(args.epochs):
     t = time.time()
@@ -75,11 +85,10 @@ for epoch in range(args.epochs):
           'acc_train: {:.4f}'.format(acc_train.asnumpy().item()),
           'time: {:.4f}s'.format(time.time() - t))
 
-    # TODO: Figure out step size
     trainer.step(1)
 
 print(
-    'Training Accuracy: ',accuracy(output[idx_train], labels[idx_train]).asnumpy().item(),'\n',
-    'Validation Accuracy: ',accuracy(output[idx_val], labels[idx_val]).asnumpy().item(),'\n',
-    'Test Accuracy: ',accuracy(output[idx_test], labels[idx_test]).asnumpy().item(),'\n'
+    'Training Accuracy: ', accuracy(output[idx_train], labels[idx_train]).asnumpy().item(), '\n',
+    'Validation Accuracy: ', accuracy(output[idx_val], labels[idx_val]).asnumpy().item(), '\n',
+    'Test Accuracy: ', accuracy(output[idx_test], labels[idx_test]).asnumpy().item()
 )

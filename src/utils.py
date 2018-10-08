@@ -1,3 +1,15 @@
+"""
+Author: Saravanakumar Shanmugam Sakthivadivel, 2018
+Github: https://github.com/codewithsk/graph-cnn.mxnet
+
+The Ohio State University
+Graph Convolutional Network
+
+File: utils.py
+Description: Utility functions for Graph Convolutional Networks.
+             This file has been adapted from https://github.com/tkipf/pygcn
+             and modified for MXNet NDArrays.
+"""
 import numpy as np
 import scipy.sparse as sp
 import pdb
@@ -67,14 +79,5 @@ def accuracy(output, labels):
     preds = nd.argmax(output, axis=1)
     correct = preds == labels
     correct = correct.sum()
-    return correct / len(labels)
-
-
-def sparse_mx_to_nd_sparse_tensor(sparse_mx):
-    """Convert a scipy sparse matrix to a torch sparse tensor."""
-    sparse_mx = sparse_mx.tocoo().astype(np.float32)
-    indices = nd.array(
-        np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-    values = nd.array(sparse_mx.data)
-    shape = torch.Size(sparse_mx.shape)
-    return torch.sparse.FloatTensor(indices, values, shape)
+    correct = correct / len(labels)
+    return correct.asnumpy().item()
