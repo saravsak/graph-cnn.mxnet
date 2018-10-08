@@ -25,7 +25,7 @@ parser.add_argument('--weight_decay', type=float, default=5e-4,
                     help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=16,
                     help='Number of hidden units.')
-parser.add_argument('--dropout', type=float, default=0.5,
+parser.add_argument('--dropout', type=float, default=0.0,
                     help='Dropout rate (1 - keep probability).')
 
 args = parser.parse_args()
@@ -50,7 +50,11 @@ model = GCN(
     )
 
 model.collect_params().initialize()
-trainer = gluon.Trainer(model.collect_params(), 'adam', {'learning_rate': args.lr})
+trainer = gluon.Trainer(model.collect_params(),
+                        'adam',
+                        {'learning_rate': args.lr,}
+                        )
+
 
 # TODO: Figure out how to use NLL loss MXNet
 loss = gluon.loss.SoftmaxCrossEntropyLoss()
