@@ -11,12 +11,8 @@ Description: Defines the graph convolution network model
              in https://arxiv.org/abs/1609.02907 as
              defined in layers.py
 """
-import numpy as np
-import mxnet as mx
-
-from mxnet import nd, autograd, gluon
 import mxnet.ndarray as F
-from mxnet.gluon import nn, Block
+from mxnet.gluon import Block
 
 from layers import GraphConvolution
 
@@ -51,7 +47,7 @@ class GCN(Block):
             self.gc2 = GraphConvolution(nhid, nclass, bias)
             self.dropout = dropout
 
-    def forward(self, x, adj, training=True):
+    def forward(self, x, adj):
         """
         Forward pass for Graph Convolution Network.
 
