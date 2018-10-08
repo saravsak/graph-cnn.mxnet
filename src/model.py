@@ -6,11 +6,11 @@ import mxnet.ndarray as F
 from layers import GraphConvolution
 
 class GCN(Block):
-    def __init__(self, nfeat, nhid, nclass, dropout, **kwargs):
+    def __init__(self, nfeat, nhid, nclass, dropout,bias=True, **kwargs):
         super(GCN, self).__init__(**kwargs)
         with self.name_scope():
-            self.gc1 = GraphConvolution(nfeat, nhid)
-            self.gc2 = GraphConvolution(nhid, nclass)
+            self.gc1 = GraphConvolution(nfeat, nhid, bias)
+            self.gc2 = GraphConvolution(nhid, nclass, bias)
             self.dropout = dropout
 
     def forward(self, x, adj, training=True):

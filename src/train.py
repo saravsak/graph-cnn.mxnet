@@ -42,10 +42,6 @@ mx.random.seed(args.seed)
 
 adj, features, labels, idx_train, idx_val, idx_test = load_data()
 
-#model = gluon.nn.Sequential()
-
-
-#with model.name_scope():
 model = GCN(
         nfeat = features.shape[1],
         nhid = args.hidden,

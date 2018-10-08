@@ -10,17 +10,18 @@ Description: Defines the graph convolution
              described in https://arxiv.org/abs/1609.02907
 """
 
-import mxnet as mx
-import numpy as np
-from mxnet import nd, autograd, gluon
-from mxnet.gluon import nn, Block
+import numpy as np #pylint: disable=import-error
 
-class GraphConvolution(Block):
+import mxnet as mx # pylint: disable=import-error
+from mxnet import nd # pylint: disable=import-error
+from mxnet.gluon import Block # pylint: disable=import-error
+
+class GraphConvolution(Block): # pylint: disable=too-few-public-methods
     """
     Defines the Graph Convolution layer as a Gluon Block.
     Inherits from Gluon Block
     """
-    def __init__(self, in_features, out_features, **kwargs):
+    def __init__(self, in_features, out_features, bias=True, **kwargs):
         """
         Constructor for Graph Convolution layer.
 
@@ -45,8 +46,18 @@ class GraphConvolution(Block):
                 shape=(in_features, out_features),
                 dtype=np.float64
             )
-            # TODO: Make bias optional
-            self.bias = self.params.get('bias', shape=(out_features,), dtype=np.float64)
+            if bias:
+                self.bias = self.params.get('bias',
+                                            shape=(out_features,),
+                                            dtype=np.float64,
+                                            init=mx.init.One()
+                                            )
+            else:
+                self.bias = self.params.get('bias',
+                                            shape=(out_features,),
+                                            dtype=np.float64,
+                                            init=mx.init.Zero()
+                                            )
 
     def forward(self, inp, adj):
         """
@@ -65,5 +76,4 @@ class GraphConvolution(Block):
         """
         support = nd.dot(inp, self.weight.data()) + self.bias.data()
         output = nd.dot(adj, support)
-        # TODO: Make bias optional
         return output + self.bias.data()
