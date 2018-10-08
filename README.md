@@ -28,9 +28,8 @@ python train.py
 
 ## TODO:
 1. NetworkX integration for loading data
-2. Add options to pick optimizer
-3. Add options to pick loss function
-4. Support datasets other than CORA
-5. Option to save model
-6. Add visualization support of loss parameters
+2. Add options to pick loss function
+3. Support datasets other than CORA
+4. Option to save model
+5. Add visualization support of loss parameters
 
