@@ -36,6 +36,8 @@ parser.add_argument('--hidden', type=int, default=16,
                     help='Number of hidden units.')
 parser.add_argument('--dropout', type=float, default=0.0,
                     help='Dropout rate (1 - keep probability).')
+parser.add_argument('--optim', type=str, default='adam',
+                    help='What optimizer to use. Can be any accepted optimizer from MXnet.optimizer Default is adam')
 
 args = parser.parse_args() #pylint: disable=invalid-name
 
