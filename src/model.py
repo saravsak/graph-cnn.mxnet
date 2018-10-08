@@ -21,7 +21,7 @@ class GCN(Block):
     Defines a two layer Graph Convolutional Network.
     Inherits from Gluon Block
     """
-    def __init__(self, nfeat, nhid, nclass, dropout, bias=True, **kwargs):
+    def __init__(self, nfeat, nhid, nclass, dropout, bias=True, **kwargs): #pylint: disable=too-many-arguments
         """
         Constructor for Graph Convolution Network.
 
@@ -47,7 +47,7 @@ class GCN(Block):
             self.gc2 = GraphConvolution(nhid, nclass, bias)
             self.dropout = dropout
 
-    def forward(self, x, adj):
+    def forward(self, x, adj): # pylint: disable=arguments-differ
         """
         Forward pass for Graph Convolution Network.
 
