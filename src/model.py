@@ -61,8 +61,8 @@ class GCN(Block):
         =======
             NDArray
         """
-        x = F.relu(self.gc1(x, adj))
+        x = F.relu(self.gc1(x, adj)) # pylint: disable=no-member
         if self.dropout > 0:
-            x = F.Dropout(x, self.dropout)
+            x = F.Dropout(x, self.dropout) # pylint: disable=no-member
         x = self.gc2(x, adj)
-        return F.log_softmax(x, axis=1)
+        return F.log_softmax(x, axis=1) # pylint: disable=no-member

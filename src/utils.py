@@ -24,7 +24,7 @@ def encode_onehot(labels):
     return labels_onehot
 
 
-def load_data(path="../data/cora/", dataset="cora"):
+def load_data(ctx, path="../data/cora/", dataset="cora"):
     """Load citation network dataset (cora only for now)"""
     print('Loading {} dataset...'.format(dataset))
 
@@ -54,13 +54,13 @@ def load_data(path="../data/cora/", dataset="cora"):
     idx_val = range(200, 500)
     idx_test = range(500, 1500)
 
-    features = nd.array(features.todense(), dtype=np.float64)
-    labels = nd.array(np.where(labels)[1], dtype=np.float64)
-    adj = nd.sparse.array(adj, dtype=np.float64)
+    features = nd.array(features.todense(), dtype=np.float64, ctx=ctx)
+    labels = nd.array(np.where(labels)[1], dtype=np.float64, ctx=ctx)
+    adj = nd.sparse.array(adj, dtype=np.float64, ctx=ctx)
 
-    idx_train = nd.array(idx_train)
-    idx_val = nd.array(idx_val)
-    idx_test = nd.array(idx_test)
+    idx_train = nd.array(idx_train, ctx=ctx)
+    idx_val = nd.array(idx_val, ctx=ctx)
+    idx_test = nd.array(idx_test, ctx=ctx)
 
     return adj, features, labels, idx_train, idx_val, idx_test
 

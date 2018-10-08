@@ -51,14 +51,14 @@ else:
 np.random.seed(args.seed)
 mx.random.seed(args.seed)
 
-adj, features, labels, idx_train, idx_val, idx_test = load_data() # pylint: disable=invalid-name
+adj, features, labels, idx_train, idx_val, idx_test = load_data(ctx=ctx) # pylint: disable=invalid-name
 
 model = GCN(nfeat=features.shape[1], # pylint: disable=invalid-name
             nhid=args.hidden,
             nclass=int(labels.max().asnumpy().item()) + 1,
             dropout=args.dropout)
 
-model.collect_params().initialize()
+model.collect_params().initialize(ctx=ctx)
 trainer = gluon.Trainer(model.collect_params(), # pylint: disable=invalid-name
                         'adam',
                         {'learning_rate': args.lr,})
@@ -77,18 +77,18 @@ for epoch in range(args.epochs):
         output = model(features, adj)
         loss_train = loss(output[idx_train], labels[idx_train])
         acc_train = accuracy(output[idx_train], labels[idx_train])
-        accs.extend(acc_train.asnumpy())
+        accs.append(acc_train)
         loss_train.backward()
 
     print('Epoch: {:04d}'.format(epoch+1),
           'loss_train: {:.4f}'.format(np.mean(loss_train.asnumpy())),
-          'acc_train: {:.4f}'.format(acc_train.asnumpy().item()),
+          'acc_train: {:.4f}'.format(acc_train),
           'time: {:.4f}s'.format(time.time() - t))
 
     trainer.step(1)
 
 print(
-    'Training Accuracy: ', accuracy(output[idx_train], labels[idx_train]).asnumpy().item(), '\n',
-    'Validation Accuracy: ', accuracy(output[idx_val], labels[idx_val]).asnumpy().item(), '\n',
-    'Test Accuracy: ', accuracy(output[idx_test], labels[idx_test]).asnumpy().item()
+    'Training Accuracy: ', accuracy(output[idx_train], labels[idx_train]), '\n',
+    'Validation Accuracy: ', accuracy(output[idx_val], labels[idx_val]), '\n',
+    'Test Accuracy: ', accuracy(output[idx_test], labels[idx_test])
 )

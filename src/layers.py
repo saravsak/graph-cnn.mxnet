@@ -44,22 +44,22 @@ class GraphConvolution(Block): # pylint: disable=too-few-public-methods
                 'weight',
                 init=mx.init.Xavier(magnitude=2.24),
                 shape=(in_features, out_features),
-                dtype=np.float64
+                dtype=np.float64,
             )
             if bias:
                 self.bias = self.params.get('bias',
                                             shape=(out_features,),
                                             dtype=np.float64,
-                                            init=mx.init.One()
+                                            init=mx.init.One(),
                                             )
             else:
                 self.bias = self.params.get('bias',
                                             shape=(out_features,),
                                             dtype=np.float64,
-                                            init=mx.init.Zero()
+                                            init=mx.init.Zero(),
                                             )
 
-    def forward(self, inp, adj):
+    def forward(self, inp, adj): #pylint: disable=arguments-differ
         """
         Forward pass for Graph Convolution Layer.
 
@@ -74,6 +74,6 @@ class GraphConvolution(Block): # pylint: disable=too-few-public-methods
         =======
             NDArray
         """
-        support = nd.dot(inp, self.weight.data()) + self.bias.data()
-        output = nd.dot(adj, support)
+        support = nd.dot(inp, self.weight.data()) + self.bias.data() # pylint: disable=no-member
+        output = nd.dot(adj, support) #pylint: disable=no-member
         return output + self.bias.data()
